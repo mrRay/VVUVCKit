@@ -512,7 +512,7 @@
 		96C2712519D5695B00705982 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Vidvox;
 			};
 			buildConfigurationList = 96C2712819D5695B00705982 /* Build configuration list for PBXProject "VVUVCKit" */;

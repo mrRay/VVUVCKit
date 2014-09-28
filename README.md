@@ -53,7 +53,7 @@ The "UVC Test App" demonstrates how to use VVUVCController to create a window wi
 
 Documentation for the VVUVCKit framework can be found here- the only class you'll probably need to work with is VVUVCController:
 
-http://vidvox.net/rays_oddsnends/VVUVCKit/
+http://vidvox.net/rays_oddsnends/VVUVCKit_doc/
 
 Generally speaking, you want to create the VVUVCController for a given (enabled) USB video device.  You can use the "uniqueID" property (a string containing a 16-digit hex valu) of either a QTCaptureDevice or an AVCaptureDevice.  Once you've created it, you can either open a window with a GUI for the camera's available controls (-[VVUVCController openSettingsWindow]) or get/set the parameters programmatically.  Once you're happy with the state of your camera, you can use the "createSnapshot" and "loadSnapshot:" methods to save and load the settings to/from an NSDictionary.
 
