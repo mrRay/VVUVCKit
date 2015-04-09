@@ -330,7 +330,8 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 }
 - (id) initWithLocationID:(UInt32)locationID {
 	NSLog(@"%s ... %d, %X",__func__,(unsigned int)locationID,(unsigned int)locationID);
-	if( self = [super init] ) {
+	self = [super init];
+	if (self!=nil) {
 		//	technically i don't need to set these here- they're calculated below from the BusProber, but default values are good, m'kay?
 		inputTerminalID = 1;
 		processingUnitID = 2;	//	logitech C910
@@ -446,6 +447,7 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 		
 		IOServiceGetMatchingServices( kIOMasterPortDefault, matchingDict, &serviceIterator );
 		
+		BOOL						successfullInit = NO;
 		io_service_t				camera;
 		while( (camera = IOIteratorNext(serviceIterator)) ) {
 			// Get DeviceInterface
@@ -457,7 +459,11 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 			kr = IOCreatePlugInInterfaceForService( camera, kIOUSBDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &plugInInterface, &score );
 			if( (kIOReturnSuccess != kr) || !plugInInterface ) {
 				NSLog( @"CameraControl Error: IOCreatePlugInInterfaceForService returned 0x%08x.", kr );
-				IODestroyPlugInInterface(plugInInterface);
+				if (plugInInterface!=NULL)	{
+					IODestroyPlugInInterface(plugInInterface);
+					plugInInterface = NULL;
+					break;
+				}
 			}
 			else	{
 				HRESULT					res = (*plugInInterface)->QueryInterface(plugInInterface, CFUUIDGetUUIDBytes(kIOUSBDeviceInterfaceID), (LPVOID*) &deviceInterface );
@@ -465,7 +471,11 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 				if( res || deviceInterface == NULL ) {
 					NSLog( @"CameraControl Error: QueryInterface returned %d.\n", (int)res );
 					//	clean up the plugin interface
-					IODestroyPlugInInterface(plugInInterface);
+					if (plugInInterface!=NULL)	{
+						IODestroyPlugInInterface(plugInInterface);
+						plugInInterface = NULL;
+						break;
+					}
 				}
 				else	{
 					UInt32 currentLocationID = 0;
@@ -475,17 +485,28 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 						//	get the usb interface
 						interface = [self _getControlInferaceWithDeviceInterface:deviceInterface];
 						[self generalInit];
+						successfullInit = YES;
 						//	clean up the plugin interface
 						IODestroyPlugInInterface(plugInInterface);
-						return self;
+						plugInInterface = NULL;
+						break;
 					}
 					//	clean up the plugin interface
 					IODestroyPlugInInterface(plugInInterface);
+					plugInInterface = NULL;
 				}
 			}
 			
 		} // end while
 		
+		
+		//	if i successfully init'ed the camera, i can return myself
+		if (successfullInit)
+			return self;
+		//	else i couldn't successfully init myself, something went wrong/i couldn't connect: release self and return nil;
+		NSLog(@"\t\tERR: couldn't create VVUVCController with locationID %d, %X",(unsigned int)locationID,(unsigned int)locationID);
+		[self release];
+		return nil;
 	}
 	return self;
 }

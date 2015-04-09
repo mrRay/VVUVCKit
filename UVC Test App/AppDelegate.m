@@ -101,8 +101,12 @@
 	}
 	[vidSrc loadDeviceWithUniqueID:[selectedItem representedObject]];
 	uvcController = [[VVUVCController alloc] initWithDeviceIDString:repObj];
-	//[uvcController _autoDetectProcessingUnitID];
-	[uvcController openSettingsWindow];
+	if (uvcController==nil)
+		NSLog(@"\t\tERR: couldn't create VVUVCController, %s",__func__);
+	else	{
+		//[uvcController _autoDetectProcessingUnitID];
+		[uvcController openSettingsWindow];
+	}
 }
 - (void) renderCallback	{
 	CVOpenGLTextureRef		newTex = [vidSrc safelyGetRetainedTextureRef];
