@@ -319,7 +319,7 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 }
 */
 - (id) initWithDeviceIDString:(NSString *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	if (n != nil)	{
 		UInt32		locationID = 0;
 		sscanf([n UTF8String], "0x%8x",(unsigned int *)&locationID);
@@ -329,7 +329,7 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	return nil;
 }
 - (id) initWithLocationID:(UInt32)locationID {
-	NSLog(@"%s ... %d, %X",__func__,(unsigned int)locationID,(unsigned int)locationID);
+	//NSLog(@"%s ... %d, %X",__func__,(unsigned int)locationID,(unsigned int)locationID);
 	self = [super init];
 	if (self!=nil) {
 		//	technically i don't need to set these here- they're calculated below from the BusProber, but default values are good, m'kay?
