@@ -49,7 +49,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{362, 760}, {396, 418}}</string>
 				<int key="NSWTFlags">1954021376</int>
-				<string key="NSWindowTitle">UVC Settings</string>
+				<string key="NSWindowTitle">Camera Settings</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
