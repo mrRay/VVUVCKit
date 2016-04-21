@@ -72,10 +72,12 @@ extern uvc_control_info_t	_backlightCtrl;
 extern uvc_control_info_t	_brightCtrl;
 extern uvc_control_info_t	_contrastCtrl;
 extern uvc_control_info_t	_gainCtrl;
+extern uvc_control_info_t	_powerLineCtrl;
 extern uvc_control_info_t	_autoHueCtrl;
 extern uvc_control_info_t	_hueCtrl;
 extern uvc_control_info_t	_saturationCtrl;
 extern uvc_control_info_t	_sharpnessCtrl;
+extern uvc_control_info_t	_gammaCtrl;
 extern uvc_control_info_t	_whiteBalanceAutoTempCtrl;
 extern uvc_control_info_t	_whiteBalanceTempCtrl;
 
@@ -128,10 +130,12 @@ This is probably the only class you'll have to work with in this framework.  The
 	uvc_param			bright;
 	uvc_param			contrast;
 	uvc_param			gain;
+	uvc_param			powerLine;
 	uvc_param			autoHue;
 	uvc_param			hue;
 	uvc_param			saturation;
 	uvc_param			sharpness;
+	uvc_param			gamma;
 	uvc_param			autoWhiteBalance;
 	uvc_param			whiteBalance;
 	
@@ -308,6 +312,18 @@ This is probably the only class you'll have to work with in this framework.  The
 - (long) minGain;
 ///	The max gain value
 - (long) maxGain;
+///	Sets the powerline to the passed value
+- (void) setPowerLine:(long)n;
+///	Gets the powerline value currently being used by the camera
+- (long) powerLine;
+///	Whether or not this camera supports the powerline parameter
+- (BOOL) powerLineSupported;
+///	Resets the powerline value to the hardware-defined default
+- (void) resetPowerLine;
+///	The min powerline value
+- (long) minPowerLine;
+///	The max powerline value
+- (long) maxPowerLine;
 ///	Sets the auto hue to the passed value
 - (void) setAutoHue:(BOOL)n;
 ///	The auto hue value currently being used by the camera
@@ -352,6 +368,18 @@ This is probably the only class you'll have to work with in this framework.  The
 - (long) minSharpness;
 ///	The max sharpness value
 - (long) maxSharpness;
+///	Sets the gamma to the passed value
+- (void) setGamma:(long)n;
+///	Gets the gamma value currently being used by the camera
+- (long) gamma;
+///	Whether or not this camera supports the gamma parameter
+- (BOOL) gammaSupported;
+///	Resets the gamma value to the hardware-defined default
+- (void) resetGamma;
+///	The min gamma value
+- (long) minGamma;
+///	The max gamma value
+- (long) maxGamma;
 ///	Sets the auto white balance to the passed value
 - (void) setAutoWhiteBalance:(BOOL)n;
 ///	Gets the auto white balance value currently being used by the camera

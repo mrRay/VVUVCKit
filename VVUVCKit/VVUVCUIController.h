@@ -25,10 +25,12 @@
 	IBOutlet VVUVCUIElement		*backlightElement;
 	IBOutlet VVUVCUIElement		*brightElement;
 	IBOutlet VVUVCUIElement		*contrastElement;
-	IBOutlet VVUVCUIElement		*gainElement;
+	IBOutlet VVUVCUIElement		*powerElement;
+	IBOutlet VVUVCUIElement		*gammaElement;
 	IBOutlet VVUVCUIElement		*hueElement;
 	IBOutlet VVUVCUIElement		*satElement;
 	IBOutlet VVUVCUIElement		*sharpElement;
+	IBOutlet VVUVCUIElement		*gainElement;
 	IBOutlet VVUVCUIElement		*wbElement;
 }
 
