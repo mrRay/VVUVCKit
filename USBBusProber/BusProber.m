@@ -246,7 +246,7 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator)
 		sprintf((char *)buf, "%s (0x%x)", USBErrorToString(error), error );
 		[thisDevice addProperty:"Port Information:" withValue:buf  atDepth:ROOT_LEVEL];
 
-		NSLog(@"USB Prober: GetUSBDeviceInformation() for device @%8x failed with %s", (uint32_t)[thisDevice locationID], USBErrorToString(error));
+		//NSLog(@"USB Prober: GetUSBDeviceInformation() for device @%8x failed with %s", (uint32_t)[thisDevice locationID], USBErrorToString(error));
 	}
 	
 	// Log the number of endpoints for each configuration
