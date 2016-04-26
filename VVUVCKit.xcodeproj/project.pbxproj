@@ -15,7 +15,7 @@
 		962773A919D56C69001EDD16 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 962773A719D56C69001EDD16 /* Credits.rtf */; };
 		962773AC19D56C69001EDD16 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 962773AB19D56C69001EDD16 /* AppDelegate.m */; };
 		962773AF19D56C69001EDD16 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 962773AD19D56C69001EDD16 /* MainMenu.xib */; };
-		962773B719D56C98001EDD16 /* VVUVCKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96C2712E19D5695B00705982 /* VVUVCKit.framework */; };
+		962773B719D56C98001EDD16 /* VVUVCKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96C2712E19D5695B00705982 /* VVUVCKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		962773BA19D56D27001EDD16 /* AVCaptureVideoSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 962773B919D56D27001EDD16 /* AVCaptureVideoSource.m */; };
 		962773BC19D5C35C001EDD16 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962773BB19D5C35C001EDD16 /* AVFoundation.framework */; };
 		962773BE19D5C360001EDD16 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962773BD19D5C360001EDD16 /* CoreVideo.framework */; };
@@ -81,7 +81,7 @@
 		96CCFEC019D6C0BE000B1B2C /* OutlineViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CCFEBC19D6C0BE000B1B2C /* OutlineViewAdditions.m */; };
 		96CCFEC319D6C0C5000B1B2C /* ExtensionSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 96CCFEC119D6C0C5000B1B2C /* ExtensionSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		96CCFEC419D6C0C5000B1B2C /* ExtensionSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CCFEC219D6C0C5000B1B2C /* ExtensionSelector.m */; };
-		96D296F819D6C4070030185B /* USBBusProber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96CCFE5F19D6BFAD000B1B2C /* USBBusProber.framework */; };
+		96D296F819D6C4070030185B /* USBBusProber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96CCFE5F19D6BFAD000B1B2C /* USBBusProber.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -512,8 +512,16 @@
 		96C2712519D5695B00705982 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Vidvox;
+				TargetAttributes = {
+					96C2712D19D5695B00705982 = {
+						DevelopmentTeam = CDB4DSECA2;
+					};
+					96CCFE5E19D6BFAD000B1B2C = {
+						DevelopmentTeam = CDB4DSECA2;
+					};
+				};
 			};
 			buildConfigurationList = 96C2712819D5695B00705982 /* Build configuration list for PBXProject "VVUVCKit" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -683,6 +691,7 @@
 				GCC_PREFIX_HEADER = "UVC Test App/UVC Test App-Prefix.pch";
 				INFOPLIST_FILE = "UVC Test App/UVC Test App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -696,6 +705,7 @@
 				GCC_PREFIX_HEADER = "UVC Test App/UVC Test App-Prefix.pch";
 				INFOPLIST_FILE = "UVC Test App/UVC Test App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -705,7 +715,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -714,6 +723,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -737,7 +747,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -769,6 +778,7 @@
 				GCC_PREFIX_HEADER = "VVUVCKit/VVUVCKit-Prefix.pch";
 				INFOPLIST_FILE = "VVUVCKit/VVUVCKit-Info.plist";
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -785,6 +795,7 @@
 				GCC_PREFIX_HEADER = "VVUVCKit/VVUVCKit-Prefix.pch";
 				INFOPLIST_FILE = "VVUVCKit/VVUVCKit-Info.plist";
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -801,6 +812,7 @@
 				GCC_PREFIX_HEADER = "USBBusProber/USBBusProber-Prefix.pch";
 				INFOPLIST_FILE = "USBBusProber/USBBusProber-Info.plist";
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -817,6 +829,7 @@
 				GCC_PREFIX_HEADER = "USBBusProber/USBBusProber-Prefix.pch";
 				INFOPLIST_FILE = "USBBusProber/USBBusProber-Info.plist";
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Vidvox.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};

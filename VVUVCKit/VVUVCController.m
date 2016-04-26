@@ -109,10 +109,12 @@ uvc_control_info_t	_backlightCtrl;
 uvc_control_info_t	_brightCtrl;
 uvc_control_info_t	_contrastCtrl;
 uvc_control_info_t	_gainCtrl;
+uvc_control_info_t	_powerLineCtrl;
 uvc_control_info_t	_autoHueCtrl;
 uvc_control_info_t	_hueCtrl;
 uvc_control_info_t	_saturationCtrl;
 uvc_control_info_t	_sharpnessCtrl;
+uvc_control_info_t	_gammaCtrl;
 uvc_control_info_t	_whiteBalanceAutoTempCtrl;
 uvc_control_info_t	_whiteBalanceTempCtrl;
 
@@ -252,6 +254,14 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	_gainCtrl.hasDef = YES;
 	_gainCtrl.isSigned = NO;
 	_gainCtrl.isRelative = NO;
+	_powerLineCtrl.unit = UVC_PROCESSING_UNIT_ID;
+	_powerLineCtrl.selector = UVC_PU_POWER_LINE_FREQUENCY_CONTROL;
+	_powerLineCtrl.intendedSize = 2;
+	_powerLineCtrl.hasMin = YES;
+	_powerLineCtrl.hasMax = YES;
+	_powerLineCtrl.hasDef = YES;
+	_powerLineCtrl.isSigned = NO;
+	_powerLineCtrl.isRelative = NO;
 	_autoHueCtrl.unit = UVC_PROCESSING_UNIT_ID;
 	_autoHueCtrl.selector = UVC_PU_HUE_AUTO_CONTROL;
 	_autoHueCtrl.intendedSize = 2;
@@ -284,6 +294,14 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	_sharpnessCtrl.hasDef = YES;
 	_sharpnessCtrl.isSigned = NO;
 	_sharpnessCtrl.isRelative = NO;
+	_gammaCtrl.unit = UVC_PROCESSING_UNIT_ID;
+	_gammaCtrl.selector = UVC_PU_GAMMA_CONTROL;
+	_gammaCtrl.intendedSize = 2;
+	_gammaCtrl.hasMin = YES;
+	_gammaCtrl.hasMax = YES;
+	_gammaCtrl.hasDef = YES;
+	_gammaCtrl.isSigned = NO;
+	_gammaCtrl.isRelative = NO;
 	_whiteBalanceAutoTempCtrl.unit = UVC_PROCESSING_UNIT_ID;
 	_whiteBalanceAutoTempCtrl.selector = UVC_PU_WHITE_BALANCE_TEMPERATURE_AUTO_CONTROL;
 	_whiteBalanceAutoTempCtrl.intendedSize = 1;
@@ -319,17 +337,17 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 }
 */
 - (id) initWithDeviceIDString:(NSString *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	if (n != nil)	{
-		UInt32		locationID = 0;
-		sscanf([n UTF8String], "0x%8x",(unsigned int *)&locationID);
-		return [self initWithLocationID:locationID];
+		unsigned int locationID = 0;
+		sscanf([n UTF8String], "0x%8x",&locationID);
+		if (locationID) return [self initWithLocationID:locationID];
 	}
 	[self release];
 	return nil;
 }
 - (id) initWithLocationID:(UInt32)locationID {
-	NSLog(@"%s ... %d, %X",__func__,(unsigned int)locationID,(unsigned int)locationID);
+	//NSLog(@"%s ... %d, %X",__func__,(unsigned int)locationID,(unsigned int)locationID);
 	self = [super init];
 	if (self!=nil) {
 		//	technically i don't need to set these here- they're calculated below from the BusProber, but default values are good, m'kay?
@@ -487,13 +505,17 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 						[self generalInit];
 						successfullInit = YES;
 						//	clean up the plugin interface
-						IODestroyPlugInInterface(plugInInterface);
-						plugInInterface = NULL;
+						if (plugInInterface!=NULL)	{
+							IODestroyPlugInInterface(plugInInterface);
+							plugInInterface = NULL;
+						}
 						break;
 					}
 					//	clean up the plugin interface
-					IODestroyPlugInInterface(plugInInterface);
-					plugInInterface = NULL;
+					if (plugInInterface!=NULL)	{
+						IODestroyPlugInInterface(plugInInterface);
+						plugInInterface = NULL;
+					}
 				}
 			}
 			
@@ -582,10 +604,12 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	bright.ctrlInfo = &_brightCtrl;
 	contrast.ctrlInfo = &_contrastCtrl;
 	gain.ctrlInfo = &_gainCtrl;
+	powerLine.ctrlInfo = &_powerLineCtrl;
 	autoHue.ctrlInfo = &_autoHueCtrl;
 	hue.ctrlInfo = &_hueCtrl;
 	saturation.ctrlInfo = &_saturationCtrl;
 	sharpness.ctrlInfo = &_sharpnessCtrl;
+	gamma.ctrlInfo = &_gammaCtrl;
 	autoWhiteBalance.ctrlInfo = &_whiteBalanceAutoTempCtrl;
 	whiteBalance.ctrlInfo = &_whiteBalanceTempCtrl;
 	
@@ -651,10 +675,12 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	[returnMe setObject:[NSNumber numberWithLong:[self bright]] forKey:@"bright"];
 	[returnMe setObject:[NSNumber numberWithLong:[self contrast]] forKey:@"contrast"];
 	[returnMe setObject:[NSNumber numberWithLong:[self gain]] forKey:@"gain"];
+	[returnMe setObject:[NSNumber numberWithLong:[self powerLine]] forKey:@"powerLine"];
 	[returnMe setObject:[NSNumber numberWithBool:[self autoHue]] forKey:@"autoHue"];
 	[returnMe setObject:[NSNumber numberWithLong:[self hue]] forKey:@"hue"];
 	[returnMe setObject:[NSNumber numberWithLong:[self saturation]] forKey:@"saturation"];
 	[returnMe setObject:[NSNumber numberWithLong:[self sharpness]] forKey:@"sharpness"];
+	[returnMe setObject:[NSNumber numberWithLong:[self gamma]] forKey:@"gamma"];
 	[returnMe setObject:[NSNumber numberWithBool:[self autoWhiteBalance]] forKey:@"autoWhiteBalance"];
 	[returnMe setObject:[NSNumber numberWithLong:[self whiteBalance]] forKey:@"whiteBalance"];
 	return returnMe;
@@ -750,6 +776,11 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 		[self setGain:[tmpNum longValue]];
 	}
 	
+	tmpNum = [s objectForKey:@"powerLine"];
+	if (tmpNum!=nil)	{
+		[self setPowerLine:[tmpNum longValue]];
+	}
+	
 	tmpNum = [s objectForKey:@"autoHue"];
 	if (tmpNum!=nil)	{
 		[self setAutoHue:[tmpNum boolValue]];
@@ -768,6 +799,11 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	tmpNum = [s objectForKey:@"sharpness"];
 	if (tmpNum!=nil)	{
 		[self setSharpness:[tmpNum longValue]];
+	}
+	
+	tmpNum = [s objectForKey:@"gamma"];
+	if (tmpNum!=nil)	{
+		[self setGamma:[tmpNum longValue]];
 	}
 	
 	tmpNum = [s objectForKey:@"autoWhiteBalance"];
@@ -901,10 +937,12 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	[self _populateParam:&bright];
 	[self _populateParam:&contrast];
 	[self _populateParam:&gain];
+	[self _populateParam:&powerLine];
 	[self _populateParam:&autoHue];
 	[self _populateParam:&hue];
 	[self _populateParam:&saturation];
 	[self _populateParam:&sharpness];
+	[self _populateParam:&gamma];
 	
 	[self _populateParam:&autoWhiteBalance];
 	
@@ -930,10 +968,12 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	NSLogParam(@"\t\t bright",bright);
 	NSLogParam(@"\t\t contrast",contrast);
 	NSLogParam(@"\t\t gain",gain);
+	NSLogParam(@"\t\t power",powerLine);
 	NSLogParam(@"\t\t auto hue",autoHue);
 	NSLogParam(@"\t\t hue",hue);
 	NSLogParam(@"\t\t sat",saturation);
 	NSLogParam(@"\t\t sharp",sharpness);
+	NSLogParam(@"\t\t gamma",gamma);
 	NSLogParam(@"\t\t auto wb",autoWhiteBalance);
 	NSLogParam(@"\t\t wb",whiteBalance);
 	NSLog(@"\t\t*******************");
@@ -1156,10 +1196,12 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	[self _resetParamToDefault:&bright];
 	[self _resetParamToDefault:&contrast];
 	[self _resetParamToDefault:&gain];
+	[self _resetParamToDefault:&powerLine];
 	[self _resetParamToDefault:&autoHue];
 	[self _resetParamToDefault:&hue];
 	[self _resetParamToDefault:&saturation];
 	[self _resetParamToDefault:&sharpness];
+	[self _resetParamToDefault:&gamma];
 	[self _resetParamToDefault:&autoWhiteBalance];
 	[self _resetParamToDefault:&whiteBalance];
 }
@@ -1225,6 +1267,7 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	if (![self _pushParamToDevice:&autoExposureMode])
 		[uiCtrlr _pushCameraControlStateToUI];	//	this is meant to "reload" the UI from the existing camera state if pushing a param failed (because the auto-exposure mode isn't supported).  this does not work- i think the USB device will accept the value, even though it isn't supported (the val is changing, but the behavior is simply unsupported)
 	
+	[self _pushParamToDevice:&exposureTime];
 	//if (oldVal != autoExposureMode.val && delegate!=nil)
 	//	[delegate VVUVCControllerParamsUpdated:self];
 }
@@ -1472,6 +1515,26 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 - (long) maxGain	{
 	return (!gain.supported) ? 0 : gain.max;
 }
+- (void) setPowerLine:(long)n	{
+	[self setVal:n forParam:&powerLine];
+}
+- (long) powerLine	{
+	if (!powerLine.supported)
+		return 0;
+	return powerLine.val;
+}
+- (BOOL) powerLineSupported	{
+	return powerLine.supported;
+}
+- (void) resetPowerLine	{
+	[self _resetParamToDefault:&powerLine];
+}
+- (long) minPowerLine {
+	return (!powerLine.supported) ? 0 : powerLine.min;
+}
+- (long) maxPowerLine {
+	return (!powerLine.supported) ? 0 : powerLine.max;
+}
 - (void) setAutoHue:(BOOL)n	{
 	//BOOL			changed = (autoHue.val != ((n) ? 0x01 : 0x00)) ? YES : NO;
 	autoHue.val = (n) ? 0x01 : 0x00;
@@ -1545,6 +1608,26 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 }
 - (long) maxSharpness	{
 	return (!sharpness.supported) ? 0 : sharpness.max;
+}
+- (void) setGamma:(long)n	{
+	[self setVal:n forParam:&gamma];
+}
+- (long) gamma	{
+	if (!gamma.supported)
+		return 0;
+	return gamma.val;
+}
+- (BOOL) gammaSupported	{
+	return gamma.supported;
+}
+- (void) resetGamma	{
+	[self _resetParamToDefault:&gamma];
+}
+- (long) minGamma	{
+	return (!gamma.supported) ? 0 : gamma.min;
+}
+- (long) maxGamma	{
+	return (!gamma.supported) ? 0 : gamma.max;
 }
 - (void) setAutoWhiteBalance:(BOOL)n	{
 	//BOOL			changed = (autoWhiteBalance.val != ((n) ? 0x01 : 0x00)) ? YES : NO;

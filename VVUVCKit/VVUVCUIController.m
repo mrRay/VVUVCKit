@@ -25,9 +25,11 @@
 	[brightElement setTitle:@"Brightness"];
 	[contrastElement setTitle:@"Contrast"];
 	[gainElement setTitle:@"Gain"];
+	[powerElement setTitle:@"Power Line Frequency"];
 	[hueElement setTitle:@"Hue"];
 	[satElement setTitle:@"Saturation"];
 	[sharpElement setTitle:@"Sharpness"];
+	[gammaElement setTitle:@"Gamma"];
 	[wbElement setTitle:@"White Balance"];
 }
 - (void) dealloc	{
@@ -61,6 +63,9 @@
 	else if (sender == gainElement)	{
 		[device setGain:[sender val]];
 	}
+	else if (sender == powerElement)	{
+		[device setPowerLine:[sender val]];
+	}
 	else if (sender == hueElement)	{
 		[device setHue:[sender val]];
 	}
@@ -69,6 +74,9 @@
 	}
 	else if (sender == sharpElement)	{
 		[device setSharpness:[sender val]];
+	}
+	else if (sender == gammaElement)	{
+		[device setGamma:[sender val]];
 	}
 	else if (sender == wbElement)	{
 		[device setWhiteBalance:[sender val]];
@@ -165,7 +173,7 @@
 		[backlightElement setMax:(int)[device maxBacklight]];
 		[backlightElement setVal:(int)[device backlight]];
 	}
-	[backlightElement setEnabled:[device backlight]];
+	[backlightElement setEnabled:[device backlightSupported]];
 
 	if ([device brightSupported])	{
 		[brightElement setMin:(int)[device minBright]];
@@ -188,6 +196,13 @@
 	}
 	[gainElement setEnabled:[device gainSupported]];
 
+	if ([device powerLineSupported])	{
+		[powerElement setMin:(int)[device minPowerLine]];
+		[powerElement setMax:(int)[device maxPowerLine]];
+		[powerElement setVal:(int)[device powerLine]];
+	}
+	[powerElement setEnabled:[device powerLineSupported]];
+	
 	if ([device saturationSupported])	{
 		[satElement setMin:(int)[device minSaturation]];
 		[satElement setMax:(int)[device maxSaturation]];
@@ -202,8 +217,11 @@
 	}
 	[sharpElement setEnabled:[device sharpnessSupported]];
 
-	
-	
+	if ([device gammaSupported])	{
+		[gammaElement setMin:(int)[device minGamma]];
+		[gammaElement setMax:(int)[device maxGamma]];
+		[gammaElement setVal:(int)[device gamma]];
+	}
 	
 	[expPriorityButton setEnabled:[device autoExposurePrioritySupported]];
 	[expPriorityButton setIntValue:([device autoExposurePriority]) ? NSOnState : NSOffState];
@@ -211,15 +229,7 @@
 	[autoFocusButton setEnabled:([device autoFocusSupported]) ? YES : NO];
 	[autoFocusButton setIntValue:([device autoFocus]) ? NSOnState : NSOffState];
 	
-
 	
-
-
-
-
-
-
-
 	BOOL			enableFocusElement = NO;
 	if ([device autoFocusSupported])	{
 		[autoFocusButton setEnabled:YES];
@@ -234,6 +244,7 @@
 	}
 	else	{
 		[autoFocusButton setEnabled:NO];
+		[autoFocusButton setIntValue:NSOffState];
 		if ([device focusSupported])
 			enableFocusElement = YES;
 	}
@@ -242,10 +253,9 @@
 		[focusElement setMin:(int)[device minFocus]];
 		[focusElement setMax:(int)[device maxFocus]];
 		[focusElement setVal:(int)[device focus]];
-	}
+	} else [focusElement setVal:0];
 
-
-
+	
 	BOOL			enableHueElement = NO;
 	if ([device autoHueSupported])	{
 		[autoHueButton setEnabled:YES];
@@ -260,6 +270,7 @@
 	}
 	else	{
 		[autoHueButton setEnabled:NO];
+		[autoHueButton setIntValue:NSOffState];
 		if ([device hueSupported])
 			enableHueElement = YES;
 	}
@@ -268,8 +279,7 @@
 		[hueElement setMin:(int)[device minHue]];
 		[hueElement setMax:(int)[device maxHue]];
 		[hueElement setVal:(int)[device hue]];
-	}
-
+	} else [hueElement setVal:0];
 
 
 	BOOL			enableWBElement = NO;
@@ -286,6 +296,7 @@
 	}
 	else	{
 		[autoWBButton setEnabled:NO];
+		[autoWBButton setIntValue:NSOffState];
 		if ([device whiteBalanceSupported])
 			enableWBElement = YES;
 	}
@@ -294,8 +305,7 @@
 		[wbElement setMin:(int)[device minWhiteBalance]];
 		[wbElement setMax:(int)[device maxWhiteBalance]];
 		[wbElement setVal:(int)[device whiteBalance]];
-	}
-
+	} else [wbElement setVal:0];
 
 
 	UVC_AEMode		aeMode = [device autoExposureMode];
@@ -314,6 +324,7 @@
 			[autoExpButton selectItemAtIndex:1];
 			[expElement setEnabled:NO];
 			[irisElement setEnabled:NO];
+			[expElement setVal:0];
 			break;
 		case UVC_AEMode_ShutterPriority:
 			[autoExpButton selectItemAtIndex:2];
@@ -324,6 +335,7 @@
 			[autoExpButton selectItemAtIndex:3];
 			[expElement setEnabled:NO];
 			[irisElement setEnabled:(YES && [device irisSupported])];
+			[expElement setVal:0];
 			break;
 	}
 }
