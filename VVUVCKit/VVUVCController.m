@@ -1064,12 +1064,13 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 		memcpy(&tmpLong,bytesPtr,bytesRead);
 		free(bytesPtr);
 		bytesPtr = nil;
-		param->min = (tmpLong & valSizeMask & maskToRemoveSign);
+		if ((tmpLong & maskToRevealSign) == 0)
+			param->min = (tmpLong & valSizeMask & maskToRemoveSign);
+		else
+			param->min = -((~tmpLong & valSizeMask) + 1);
 		//NSLog(@"\t\traw min is %ld, refined min is %ld",tmpLong,param->min);
 		//if (param->actualSize != bytesRead)
 		//	NSLog(@"******* ERR: bytes read on min don't match bytes read on val!");
-		if ((tmpLong & maskToRevealSign) != 0)
-			param->min = param->min * -1;
 	}
 	//	max
 	if (param->ctrlInfo->hasMax)	{
@@ -1080,12 +1081,13 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 		memcpy(&tmpLong,bytesPtr,bytesRead);
 		free(bytesPtr);
 		bytesPtr = nil;
-		param->max = (tmpLong & valSizeMask & maskToRemoveSign);
+		if ((tmpLong & maskToRevealSign) == 0)
+			param->max = (tmpLong & valSizeMask & maskToRemoveSign);
+		else
+			param->max = -((~tmpLong & valSizeMask) + 1);
 		//NSLog(@"\t\traw max is %ld, refined max is %ld",tmpLong,param->max);
 		//if (param->actualSize != bytesRead)
 		//	NSLog(@"******* ERR: bytes read on max don't match bytes read on val!");
-		if ((tmpLong & maskToRevealSign) != 0)
-			param->max = param->max * -1;
 	}
 	//	default
 	if (param->ctrlInfo->hasDef)	{
@@ -1096,12 +1098,13 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 		memcpy(&tmpLong,bytesPtr,bytesRead);
 		free(bytesPtr);
 		bytesPtr = nil;
-		param->def = (tmpLong & valSizeMask & maskToRemoveSign);
+		if ((tmpLong & maskToRevealSign) == 0)
+			param->def = (tmpLong & valSizeMask & maskToRemoveSign);
+		else
+			param->def = -((~tmpLong & valSizeMask) + 1);
 		//NSLog(@"\t\traw def is %ld, refined def is %ld",tmpLong,param->def);
 		//if (param->actualSize != bytesRead)
 		//	NSLog(@"******* ERR: bytes read on default don't match bytes read on val!");
-		if ((tmpLong & maskToRevealSign) != 0)
-			param->def = param->def * -1;
 	}
 	
 	return;
@@ -1135,13 +1138,11 @@ uvc_control_info_t	_whiteBalanceTempCtrl;
 	int			valToSend = 0x0000;
 	//	if the val may be signed, i may have to assemble the value to be sent manually
 	if (param->ctrlInfo->isSigned)	{
-		int				shiftToGetSignBit = ((paramSize * 8) - 1);
-		//NSLog(@"\t\tshift amount is %d",shiftToGetSignBit);
 		//NSLog(@"\t\traw val is %ld",param->val);
 		valToSend = (int)labs(param->val);
 		//NSLog(@"\t\tabs val is %d",valToSend);
 		if (param->val < 0)
-			valToSend = (0x0001 << shiftToGetSignBit) | valToSend;
+			valToSend = (~valToSend + 1);
 		//NSLog(@"\t\tactual val to send is %d",valToSend);
 	}
 	//	else the control isn't signed, i can just send it out as-is and it'll be fine
